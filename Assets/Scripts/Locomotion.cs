@@ -60,6 +60,7 @@ public class Locomotion : MonoBehaviour
     // Update is called once per frame
     void UpdateCharacter()
     {
+        StayGrounded();
         AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
         Vector3 direction;
         if (info.IsName("StationaryRotation") && rotateTowardsPlayer) //We are rotating stationary and towards the player
@@ -106,6 +107,20 @@ public class Locomotion : MonoBehaviour
         {
             PickUp();
         }
+    }
+
+    void StayGrounded()
+    {
+        float groundHeight = 0;
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position + new Vector3(0, 5, 0), Vector3.down, out hit))
+        {
+            if (hit.transform.name == "Terrain")
+            {
+                groundHeight = hit.point.y;
+            }
+        }
+        transform.position = new Vector3(transform.position.x, groundHeight, transform.position.z);
     }
 
     public void SetAnimParams(Vector3 direction, float distance)
