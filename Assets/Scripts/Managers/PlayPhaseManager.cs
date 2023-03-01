@@ -53,8 +53,12 @@ public class PlayPhaseManager : MonoBehaviour
 
     private bool playerTurn = false;
 
+    public float slowFactor = 2f;
+    private float newTimeScale;
+
     private void Start()
     {
+        newTimeScale = newTimeScale = Time.timeScale / slowFactor;
         locomotion = thrower.GetComponent<Locomotion>();
 
         for (int i = 0; i < throwTargets.Count - 1; i++)
@@ -104,6 +108,7 @@ public class PlayPhaseManager : MonoBehaviour
             intervalTimer += Time.deltaTime; // Wait ..x.. seconds before running to the telikit
             if (intervalTimer > timeBeforeRecall) // We're finished waiting, retrieve the telikit.
             {
+                ResetTimeScale();
                 intervalTimer = 0;
                 locomotion.ResetTarget(telikit.transform, true); // This sets reachedTarget = false, so can only fire once
                 telikit.trail.enabled = false;
@@ -185,6 +190,23 @@ public class PlayPhaseManager : MonoBehaviour
         }
     }
 
+    void SlowDownTime()
+    {
+        //assign the 'newTimeScale' to the current 'timeScale'  
+        Time.timeScale = newTimeScale;
+        //proportionally reduce the 'fixedDeltaTime', so that the Rigidbody simulation can react correctly  
+        Time.fixedDeltaTime = Time.fixedDeltaTime / slowFactor;
+        //The maximum amount of time of a single frame  
+        Time.maximumDeltaTime = Time.maximumDeltaTime / slowFactor;
+    }
+
+    void ResetTimeScale()
+    {
+        Time.timeScale = 1.0f;
+        Time.fixedDeltaTime = Time.fixedDeltaTime * slowFactor;
+        Time.maximumDeltaTime = Time.maximumDeltaTime * slowFactor;
+    }
+
     bool CanThrow()
     {
         return numberOfThrows < maxThrows;
@@ -224,6 +246,7 @@ public class PlayPhaseManager : MonoBehaviour
         
         telikit.rigid.AddForce((throwTarget - telikit.transform.position) * force, ForceMode.Impulse);
         Debug.Log("Trow: " + numberOfThrows + " Position: " + throwTargets[randomInt].name + " Random Force: " + randomForce + " Random Area: " + new Vector3(randomX, randomY, randomZ));
+        SlowDownTime();
     }
 
     /// <summary>
