@@ -45,14 +45,12 @@ public class PlayPhaseManager : MonoBehaviour
 
     private Locomotion locomotion;
 
-    [System.NonSerialized]
-    public bool retrieve = true;
-
     [Tooltip("If the Telikit is within this collider it's allowed to retrieve it.")]
     public Collider retrievalCollider;
 
     private bool playerTurn = false;
 
+    [Header("Everything to do with Slowing Time")]
     public float slowFactor = 2f;
     private float newTimeScale;
 
@@ -110,8 +108,14 @@ public class PlayPhaseManager : MonoBehaviour
             {
                 ResetTimeScale();
                 intervalTimer = 0;
-                locomotion.ResetTarget(telikit.transform, true); // This sets reachedTarget = false, so can only fire once
                 telikit.trail.enabled = false;
+
+                // Alow player to grab the telikit and throw it back.
+                telikit.interactible.enabled = true;
+                if (telikit.grounded && telikit.thrownByThrower == false) 
+                {
+                    locomotion.ResetTarget(telikit.transform, true); // This sets reachedTarget = false, so can only fire once <-- guy runs after telikit
+                }
             }
         }
         // We're allowed to throw, based on nr of throws
@@ -180,7 +184,7 @@ public class PlayPhaseManager : MonoBehaviour
     bool CanRetrieve()
     {
         bool withinBounds = retrievalCollider.bounds.Contains(telikit.transform.position);
-        if (retrieve == true && withinBounds == true)
+        if (withinBounds == true)
         {
             return true;
         }
@@ -190,7 +194,7 @@ public class PlayPhaseManager : MonoBehaviour
         }
     }
 
-    void SlowDownTime()
+    public void SlowDownTime(float slowFactor)
     {
         //assign the 'newTimeScale' to the current 'timeScale'  
         Time.timeScale = newTimeScale;
@@ -198,13 +202,14 @@ public class PlayPhaseManager : MonoBehaviour
         Time.fixedDeltaTime = Time.fixedDeltaTime / slowFactor;
         //The maximum amount of time of a single frame  
         Time.maximumDeltaTime = Time.maximumDeltaTime / slowFactor;
+
     }
 
     void ResetTimeScale()
     {
         Time.timeScale = 1.0f;
-        Time.fixedDeltaTime = Time.fixedDeltaTime * slowFactor;
-        Time.maximumDeltaTime = Time.maximumDeltaTime * slowFactor;
+        Time.fixedDeltaTime = 0.01f;
+        Time.maximumDeltaTime = 0.33f;
     }
 
     bool CanThrow()
@@ -218,6 +223,7 @@ public class PlayPhaseManager : MonoBehaviour
     public void Throw()
     {
         playerTurn = true;
+        telikit.thrownByThrower = true;
         telikit.trail.enabled = true;
         intervalTimer = 0;
         numberOfThrows++;
@@ -246,7 +252,7 @@ public class PlayPhaseManager : MonoBehaviour
         
         telikit.rigid.AddForce((throwTarget - telikit.transform.position) * force, ForceMode.Impulse);
         Debug.Log("Trow: " + numberOfThrows + " Position: " + throwTargets[randomInt].name + " Random Force: " + randomForce + " Random Area: " + new Vector3(randomX, randomY, randomZ));
-        SlowDownTime();
+        SlowDownTime(slowFactor);
     }
 
     /// <summary>
