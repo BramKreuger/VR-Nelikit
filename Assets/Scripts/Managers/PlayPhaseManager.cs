@@ -63,31 +63,16 @@ public class PlayPhaseManager : MonoBehaviour
         {
             throwTargetsOffset.Add(catcher.transform.position - throwTargets[i].position);
         }
-
-        //StartGame(GameStateManager.Role.catcher);
     }
 
     /// <summary>
     /// This is called from the GameStateManager. Fires one time.
     /// </summary>
     /// <param name="role">Role indicates player's role.</param>
-    public void StartGame(GameStateManager.Role role)
+    public void StartGame()
     {
         playing = true;
         locomotion.started = true;
-        if (role == GameStateManager.Role.catcher)
-        {
-            catching = true;
-            StartCatcherGame();
-        }
-        else
-        {
-            catching = false;
-        }
-    }
-
-    void StartCatcherGame()
-    {
         intervalTimer = 0;
     }
 
@@ -176,7 +161,7 @@ public class PlayPhaseManager : MonoBehaviour
     void RespawnTelikit(Transform _target)
     {
         telikit.trail.enabled = false;
-        telikit.transform.position = _target.position + new Vector3(1, 1, 0);
+        telikit.transform.position = _target.position + new Vector3(0, 1, 1);
         telikit.rigid.velocity = Vector3.zero;
         telikit.trail.enabled = true;
     }

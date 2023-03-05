@@ -117,7 +117,7 @@ public class GameStateManager : MonoBehaviour
                 if(currentGameState == GameState.introduction) // If we are in the intro and we're skipping it.
                 {
                     currentGameState = (GameState)state;
-                    introManager.EndIntro();
+                    //introManager.EndIntro();
                 }
                 currentGameState = (GameState)state; // Change currentGameState
                 Debug.Log("Start selection");
@@ -126,7 +126,7 @@ public class GameStateManager : MonoBehaviour
                 roleUI.SetActive(true);
                 startButton.SetActive(true);
                 break;
-            case GameState.playing:
+                case GameState.playing:
                 if (currentRole != Role.none) // You need to choose a role first
                 {
                     currentGameState = (GameState)state; // Change currentGameState
@@ -137,7 +137,7 @@ public class GameStateManager : MonoBehaviour
                     startButton.SetActive(false);
 
                     // Move over to the playPhaseManager and start the game
-                    playPhaseManager.StartGame(Role.catcher);
+                    //playPhaseManager.StartGame(Role.catcher);
                 }
                 break;
         }        

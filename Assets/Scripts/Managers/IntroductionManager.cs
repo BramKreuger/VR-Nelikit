@@ -18,6 +18,7 @@ public class IntroductionManager : MonoBehaviour
     public List<GameObject> akaAndGugak;
     private List<Material> materials = new List<Material>();
     public List<GameObject> attatchedObjects;
+    public GameObject introUI;
 
     public float pingPongSpeed = 2f;
     private bool fading;
@@ -32,11 +33,13 @@ public class IntroductionManager : MonoBehaviour
     public float fadeToStart = 5f;
     public FadeCamera fadeCamera;
     public GameObject player;
-    GameStateManager gameStateManager;
+
+    private PlayPhaseManager playPhaseManager;
 
     private void Start()
     {
-        gameStateManager = GetComponent<GameStateManager>();
+        playPhaseManager = GetComponent<PlayPhaseManager>();
+        //gameStateManager = GetComponent<GameStateManager>();
         foreach (GameObject go in akaAndGugak)
         {
             SkinnedMeshRenderer r = go.GetComponent<SkinnedMeshRenderer>();
@@ -65,10 +68,11 @@ public class IntroductionManager : MonoBehaviour
                     StartCoroutine(FadeOut(1, 0, timeToStartFade, m));
                 }
                 
+                
             }
             else if(currentTime > totalTimeOfIntroduction && intro == true) // This gets called when the intro is finished
-            {
-                EndIntro();
+            {                
+                EndIntro(false);
             }
         }
     }
@@ -89,23 +93,27 @@ public class IntroductionManager : MonoBehaviour
             mat.SetFloat("_Opacity", fade);
             timeElapsed += Time.deltaTime;
             yield return null;
-        }
+        }        
         fade = endValue;
         mat.SetFloat("opacity", fade);
     }
-    public void EndIntro()
+    public void EndIntro(bool skipped)
     {
+        Destroy(introUI);
         Destroy(akaAndGugak[0].transform.parent.gameObject);
         Destroy(akaAndGugak[1].transform.parent.gameObject);
-        GameStateManager.Instance.ChangeGameState(1);
         intro = false;
         foreach (GameObject go in attatchedObjects)
         {
-            StartCoroutine(DetatchObjects(go, timeBeforeDeleteObjects));
+            StartCoroutine(DetatchObjects(go, timeBeforeDeleteObjects, skipped));
+        }
+        if(skipped == true)
+        {
+            StartCoroutine(MoveToStart());
         }
     }
 
-    IEnumerator DetatchObjects(GameObject go, float timeBeforeDeleteObjects)
+    IEnumerator DetatchObjects(GameObject go, float timeBeforeDeleteObjects, bool skipped)
     {
         Rigidbody r = go.GetComponent<Rigidbody>();
         ParentConstraint pc = go.GetComponent<ParentConstraint>();
@@ -118,14 +126,17 @@ public class IntroductionManager : MonoBehaviour
             yield return null;            
         }
         Destroy(go);
-        StartCoroutine(MoveToStart());
+        if (skipped == false)
+        {
+            StartCoroutine(MoveToStart());
+        }
     }
 
     IEnumerator MoveToStart()
     {
+        playPhaseManager.StartGame();
         fadeCamera.Reset();
-        player.transform.position = startLocationGame.position;
-        gameStateManager.ChangeGameState(2);
+        player.transform.position = startLocationGame.position;        
         yield return null;
     }
 }
