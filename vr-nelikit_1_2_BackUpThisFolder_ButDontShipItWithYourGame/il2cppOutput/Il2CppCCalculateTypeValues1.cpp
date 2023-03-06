@@ -892,8 +892,6 @@ struct GUIStyle_t20BA2F9F3FE9D13AAA607EEEBE5547835A6F6580;
 struct GUIStyleState_t7A948723D9DCDFD8EE4F418B6EC909C18E023F95;
 // UnityEngine.GameObject
 struct GameObject_t76FEDD663AB33C991A9C9A23129337651094216F;
-// GameStateManager
-struct GameStateManager_t37996E8A9A45519288BDCCD867F18384DEB1E408;
 // UnityEngineInternal.GenericStack
 struct GenericStack_t1FB49AB7D847C97ABAA97AB232CA416CABD24C49;
 // UnityEngine.GlobalJavaObjectRef
@@ -5412,10 +5410,12 @@ struct U3CDetatchObjectsU3Ed__25_t059BC36DB0BA6F2B321EE3ED0CEE4E4EA2AF44C5  : pu
 	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* ___go_2;
 	// System.Single IntroductionManager/<DetatchObjects>d__25::timeBeforeDeleteObjects
 	float ___timeBeforeDeleteObjects_3;
+	// System.Boolean IntroductionManager/<DetatchObjects>d__25::skipped
+	bool ___skipped_4;
 	// IntroductionManager IntroductionManager/<DetatchObjects>d__25::<>4__this
-	IntroductionManager_t682403DFF879C6EB17F25448417F570C312697FA* ___U3CU3E4__this_4;
+	IntroductionManager_t682403DFF879C6EB17F25448417F570C312697FA* ___U3CU3E4__this_5;
 	// System.Single IntroductionManager/<DetatchObjects>d__25::<timeElapsed>5__2
-	float ___U3CtimeElapsedU3E5__2_5;
+	float ___U3CtimeElapsedU3E5__2_6;
 };
 
 // IntroductionManager/<FadeOut>d__23
@@ -20046,8 +20046,8 @@ struct IntroductionManager_t682403DFF879C6EB17F25448417F570C312697FA  : public M
 	FadeCamera_tD45C1DD2058FE74DD63FC00234BCEBE93685601A* ___fadeCamera_21;
 	// UnityEngine.GameObject IntroductionManager::player
 	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* ___player_22;
-	// GameStateManager IntroductionManager::gameStateManager
-	GameStateManager_t37996E8A9A45519288BDCCD867F18384DEB1E408* ___gameStateManager_23;
+	// PlayPhaseManager IntroductionManager::playPhaseManager
+	PlayPhaseManager_t46FB32066BF2CF8C1C75516A00E80E5E5F1A16DC* ___playPhaseManager_23;
 };
 
 // UnityEngine.XR.OpenXR.Features.Interactions.KHRSimpleControllerProfile
